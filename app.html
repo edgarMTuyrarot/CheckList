@@ -1,0 +1,115 @@
+<script>
+    var llamada = {}
+    var arrayTips = []
+  
+    const loading = new bootstrap.Modal(document.getElementById('loading'), {
+    keyboard: false
+    })
+    const success = new bootstrap.Modal(document.getElementById('success'), {
+    keyboard: false
+    })
+    
+  
+  
+    var valida_datos = document.getElementById("valida_datos")
+    var explica_factura = document.getElementById("explica_factura")
+    var vigencia_promo = document.getElementById("vigencia_promo")
+    var aumento_precios = document.getElementById("aumento_precios")
+    var pagos_TC = document.getElementById("pagos_TC")
+    var medios_de_pago = document.getElementById("medios_de_pago")
+    var mi_personal = document.getElementById("mi_personal")
+    var personal_pay = document.getElementById("personal_pay")
+    var hub = document.getElementById("hub")
+    var whatsapp = document.getElementById("whatsapp")
+    var incentivar_encuesta = document.getElementById("incentivar_encuesta")
+    var cierre = document.getElementById("cierre")
+  
+    var total = 0
+    var resultado = 0
+    arrayTips.push(valida_datos,explica_factura,vigencia_promo,aumento_precios,pagos_TC,medios_de_pago,mi_personal,personal_pay,hub,whatsapp,incentivar_encuesta,cierre)
+  
+  
+  
+    arrayTips.forEach(tip=>{
+      tip.addEventListener("change",()=>{
+        total=0
+        arrayTips.forEach(e=>{
+        
+        if(e.checked){
+          total++
+          resultado = total/arrayTips.length
+        }
+      })
+      document.getElementById("porcentaje").textContent = (resultado*100).toFixed(2)+"%"
+      })
+    })
+  
+  
+  
+    document.getElementById("btn_final").addEventListener("click",()=>{
+      loading.show()
+      if((document.getElementById("u").value!="") && (document.getElementById("linea").value !="")){
+        
+        llamada = {
+          "u": document.getElementById("u").value,
+          "linea" : document.getElementById("linea").value,
+          "validaDatos" : valida_datos.checked?"Si":"No",
+          "explicaFT": explica_factura.checked?"Si":"No",
+          "vigenciaPromo" : vigencia_promo.checked?"Si":"No",
+          "aumentoPrecio" : aumento_precios.checked?"Si":"No",
+          "pagoTC" : pagos_TC.checked?"Si":"No",
+          "mediosPago" : medios_de_pago.checked?"Si":"No",
+          "miPersonal" : mi_personal.checked?"Si":"No",
+          "personalPay" : personal_pay.checked?"Si":"No",
+          "hub" : hub.checked?"Si":"No",
+          "whts" : whatsapp.checked?"Si":"No",
+          
+          "encuesta" : incentivar_encuesta.checked?"Si":"No",
+          "cierre" : cierre.checked?"Si":"No",
+          "porcentaje" : (resultado*100).toFixed(2)+"%"
+        }
+  
+  
+          document.getElementById("linea").value = ""
+          
+          valida_datos.checked = false
+          explica_factura.checked = false
+          vigencia_promo.checked = false
+          aumento_precios.checked = false
+          pagos_TC.checked = false
+          medios_de_pago.checked = false
+          mi_personal.checked = false
+          personal_pay.checked = false
+          hub.checked = false
+          whatsapp.checked = false
+          incentivar_encuesta.checked = false
+          cierre.checked = false
+          document.getElementById("porcentaje").textContent = "-%"
+  
+          
+          google.script.run.withSuccessHandler(data=>{
+  
+            loading.hide()
+            success.show()
+          }
+          ).guardar(llamada);
+        }else{
+  
+          if(document.getElementById("u").value ==""){
+            document.getElementById("u").classList.add("border-danger")
+          }else{
+            document.getElementById("u").classList.remove("border-danger")
+          }
+          if(document.getElementById("linea").value ==""){
+            document.getElementById("linea").classList.add("border-danger")
+          }else{
+            document.getElementById("linea").classList.remove("border-danger")
+          }
+        }
+  
+  
+    })
+  
+  
+  
+  </script>
